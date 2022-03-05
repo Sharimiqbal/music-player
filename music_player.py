@@ -27,15 +27,16 @@ from random import randint
 from time import sleep
 
 
-
+current_song = "E:/Music/current_song.txt"
 def songs(e=None):
     #pylint: disable=unused-argument"
     global song_list
-    song_list = listdir("tk_song")
+
+    song_list = listdir('E:/Music/tk_song')
     return song_list
 song_len = len(songs())
 def main():
-    
+
     global allSongCombo
 
     def start_app(e=None):
@@ -43,9 +44,9 @@ def main():
         songs()
         global data, player, label1, label2, full_song_time,label4
         player = media.Player()
-        
+
         try:
-            with open("current_song.txt") as f:
+            with open(current_song) as f:
                 data = f.read()
 
                 if data == "":
@@ -54,10 +55,10 @@ def main():
                 data = int(data)
 
         except:
-            with open("current_song.txt", "w"):
+            with open(current_song, "w"):
                 pass
 
-            with open("current_song.txt") as f:
+            with open(current_song) as f:
                 data = f.read()
 
                 if data == "":
@@ -68,11 +69,11 @@ def main():
         songs()
 
         try:
-            song = f"tk_song/{song_list[data]}"
+            song = f"E:/Music/tk_song/{song_list[data]}"
             src = media.load(song)
 
         except:
-            song = f"tk_song/{song_list[data-1]}"
+            song = f"E:/Music/tk_song/{song_list[data-1]}"
             src = media.load(song)
 
         player.queue(src)
@@ -92,7 +93,7 @@ def main():
 
         label2 = Label(root,bg='Light Blue')
         label2.grid(row=5, column=1,pady=10)
-        full_song_time = round(MP3(f'tk_song/{song_list[data]}').info.length)
+        full_song_time = round(MP3(f'E:/Music/tk_song/{song_list[data]}').info.length)
         label3 = Label(root, text=f'{toTime(full_song_time)}',bg='Light Blue')
         label3.grid(row=5, column=2,columnspan=2,pady=10)
         label4 = Label(root,text="",bg='Light Blue')
@@ -116,10 +117,10 @@ def main():
                 if player.time >= full_song_time:
                     nex()
                     prev()
-                
+
             try:
-                with open(f"lyrics\\{label1.cget('text')}.txt",encoding="utf-8")as file:
-                    
+                with open(f"E:/Music/lyrics/{label1.cget('text')}.txt",encoding="utf-8")as file:
+
                     lyrics = eval(file.read()) # --:> A Dictionary
                 subtitles_check.config(state='normal',cursor='hand2')
                 try:
@@ -129,7 +130,7 @@ def main():
             except Exception as e:
                 label4.config(text='Subtitles Not Available.')
                 subtitles_check.config(state='disabled',cursor='arrow')
-                
+
             timer_ = root.after(1000, time_function)
         time_function()
         pause_btn.focus_set()
@@ -161,11 +162,11 @@ def main():
         label1.grid_forget()
 
         if data > 0:
-            with open("current_song.txt", "w") as f:
+            with open(current_song, "w") as f:
                 f.write(str(data-1))
 
         else:
-            with open("current_song.txt", "w") as f:
+            with open(current_song, "w") as f:
                 f.write(str(len(song_list)-1))
 
         pause_song()
@@ -180,13 +181,13 @@ def main():
         label1.grid_forget()
 
         if data < len(song_list)-1:
-            with open("current_song.txt", "w") as f:
+            with open(current_song, "w") as f:
                 f.write(str(data+1))
 
         else:
-            with open("current_song.txt", "w") as f:
+            with open(current_song, "w") as f:
                 f.write(str(0))
-   
+
 
         pause_song()
         start_app()
@@ -196,14 +197,14 @@ def main():
         #pylint: disable=unused-argument"
         label1.config(text="")
         label4.config(text="♫ ♫")
-        with open('current_song.txt','w')as f:
+        with open(current_song,'w')as f:
             f.write(str(randint(0,len(song_list)-1)))
         pause_song()
         start_app()
         play_song()
         combo_entry_updater()
-    
-    
+
+
     def v_up(e=None):
         #pylint: disable=unused-argument"
         """Increase The Volume"""
@@ -221,21 +222,21 @@ def main():
             label4.grid(column=0,row=6,columnspan=10)
             label4.config(text='♫ ♫')
         else:
-            label4.config(text='')
+            label4.config(text=' ')
             label4.grid_forget()
-            
-       
+
+
     def combo(event=None):
         #pylint: disable=unused-argument"
         """Change Song Using ComboBox Entries"""
-        
-        with open("current_song.txt")as file:
+
+        with open(current_song)as file:
             file_data = file.read()
 
         for_write_data = str(allSongCombo.current())
 
         if file_data != for_write_data:
-            with open("current_song.txt", "w")as file:
+            with open(current_song, "w")as file:
                 file.write(for_write_data)
 
             label1.config(text="")
@@ -255,7 +256,7 @@ def main():
         allSongCombo['values'] = song_name
         play_btn.focus_set()
         pause_btn.focus_set()
-    
+
     def double_click(e=None):
         #pylint: disable=unused-argument"
         """Play or Pause The Song On Mouse Double Click"""
@@ -263,7 +264,7 @@ def main():
             pause_song()
         else:
             play_song()
-        
+
     root = Tk()
     root.config(
         padx=100,
@@ -278,24 +279,24 @@ def main():
     root.minsize(width=450, height=400)
     start_app()
 
-    play_img = PhotoImage(master=root, file="tk_photo/play.png")
+    play_img = PhotoImage(master=root, file="E:/Music/tk_photo/play.png")
     play_btn = Button(root, image=play_img, text="Play",
                     command=play_song, bg='Light Blue', borderwidth=0, activebackground="Light Blue", cursor="hand2")
 
     play_btn.grid(row=1, column=2, padx=20)
     play_btn.focus_set()
 
-    pause_img = PhotoImage(master=root, file="tk_photo/pause.png")
+    pause_img = PhotoImage(master=root, file="E:/Music/tk_photo/pause.png")
     pause_btn = Button(root, image=pause_img, bg="Light Blue",
                     text="Pause", command=pause_song, borderwidth=0, activebackground="Light Blue", cursor="hand2")
 
-    nex_img = PhotoImage(master=root, file="tk_photo/next.png")
+    nex_img = PhotoImage(master=root, file="E:/Music/tk_photo/next.png")
     nex_btn = Button(root, image=nex_img, bg="Light Blue",
                     text="next", command=nex, borderwidth=0, activebackground="Light Blue", cursor="hand2")
 
     nex_btn.grid(row=1, column=4, padx=15)
 
-    prev_img = PhotoImage(master=root, file="tk_photo/previous.png")
+    prev_img = PhotoImage(master=root, file="E:/Music/tk_photo/previous.png")
     prev_btn = Button(root, image=prev_img, command=prev,
                     bg="Light Blue", borderwidth=0, activebackground="Light Blue", cursor="hand2")
     prev_btn.grid(row=1, column=1, padx=20,)
@@ -313,7 +314,7 @@ def main():
         return song_name
     name_changer()
     allSongCombo['values'] = song_name
-    
+
 
     allSongCombo.grid(column=1, row=2, columnspan=4,pady=10)
 
@@ -326,26 +327,26 @@ def main():
     loop_var = IntVar(value=0)
     loop_btn = Checkbutton(root, text='Loop',cursor="hand2",variable=loop_var, onvalue=1, offvalue=0,bg="Light Blue",activebackground="Light Blue")
     loop_btn.grid(column=5,row=2)
-    downImage = PhotoImage(file="tk_photo/down.png")
+    downImage = PhotoImage(file="E:/Music/tk_photo/down.png")
     volume_down_btn = Button(image=downImage, bg="Light Blue", cursor="hand2", command=v_down,
                          borderwidth=0, activebackground="Light Blue")
 
     volume_down_btn.grid(column=0, row=1, columnspan=1)
 
-    upImage = PhotoImage(master=root, file="tk_photo/up.png")
+    upImage = PhotoImage(master=root, file="E:/Music/tk_photo/up.png")
     volume_up_btn = Button(image=upImage, bg="Light Blue", cursor="hand2",
-                       command=v_up, borderwidth=0, activebackground="Light Blue")
+                        command=v_up, borderwidth=0,activebackground="Light Blue")
     volume_up_btn.grid(column=5, row=1, columnspan=1)
     var_subtitles = IntVar(value=1)
     subtitles_check = Checkbutton(root, text='lyrics',cursor="hand2",variable=var_subtitles, onvalue=1,command=subtitle, offvalue=0,bg="Light Blue",activebackground="Light Blue")
     subtitles_check.grid(column=3, row=5, columnspan=2,pady=10)
-    
+
     combo_entry_updater()
-   
+
     root.bind('<Button-1>', focusSet)
     def supporter():
         """This Function Is Call Inside '(skip_forward and skip_forward)' Because Both Have The Same Line Of Code."""
-        label4.config(text="Plese Wait...")
+        label4.config(text="Please Wait...")
         if player.playing:
             pause_song()
             sleep(.05)
@@ -373,11 +374,11 @@ def main():
         else:
             player.seek(player.time-10)
             supporter()
-            
-            
+
+
     #----------------------Event add and remove----------------------#
-            
-#     root.bind('<Double-Button-1>', double_click)  # ----> To Play or Pause Song On Mouse Double Click. 
+
+#     root.bind('<Double-Button-1>', double_click)  # ----> To Play or Pause Song On Mouse Double Click.
     root.bind('<Left>', skip_backward)
     root.bind('<Right>', skip_forward)
     root.bind('<Up>', v_up)
@@ -397,12 +398,12 @@ def main():
             except:
                 nex()
             allSongCombo['values'] = song_name
-            
+
         root.after(100,isChangeInSongList)
     isChangeInSongList()
     #----------------------------------------------------------------#
     cu = song_name[allSongCombo.current()]
-    
+
     play_song()
     pause_song()
     mainloop()
