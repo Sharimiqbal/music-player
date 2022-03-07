@@ -4,7 +4,7 @@ import pkg_resources
 
 
 def required_module():
-    """Install The Required Module If Not Installed In System"""
+    """Install The Required Module For Temporarily If Not Installed In System"""
     required = {'pyglet', 'pynput','mutagen'}
     installed = {pkg.key for pkg in pkg_resources.working_set}
 
