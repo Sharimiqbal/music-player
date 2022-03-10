@@ -1,6 +1,6 @@
 from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,mainloop
-from tkinter import ttk
-from pyglet import media
+from tkinter.ttk import Combobox
+from pyglet.media import Player,load
 from os import listdir
 from ToTime import toTime
 from random import randint
@@ -8,7 +8,6 @@ from time import sleep
 
 
 def songs(e=None):
-    
     global song_list
     song_list = listdir("tk_song")
     return song_list
@@ -22,10 +21,9 @@ def main():
 
 
     def start_app(e=None):
-        
         songs()
         global data, player, label1, label2, full_song_time,label4
-        player = media.Player()
+        player = Player()
         
         try:
             with open("current_song.txt") as f:
@@ -52,11 +50,11 @@ def main():
 
         try:
             song = f"tk_song/{song_list[data]}"
-            src = media.load(song)
+            src = load(song)
         
         except:
             song = f"tk_song/{song_list[data-1]}"
-            src = media.load(song)
+            src =load(song)
         player.queue(src)
 
         try:
@@ -148,7 +146,7 @@ def main():
 
     def prev(e=None):
         """Go To The Previous Song On The List"""
-        label4.config(text="♫ ♫")
+        label4.config(text="")
         label1.grid_forget()
 
         if data > 0:
@@ -167,7 +165,7 @@ def main():
 
     def nex(event=None):
         """Go To The Next Song On The List"""
-        label4.config(text="♫ ♫")
+        label4.config(text="")
         label1.grid_forget()
 
         if data < len(song_list)-1:
@@ -187,7 +185,7 @@ def main():
     def random_song(e=None):
         """Random Song Form The List Of Song."""
         label1.config(text="")
-        label4.config(text="♫ ♫")
+        label4.config(text="")
         
         with open('current_song.txt','w')as f:
             f.write(str(randint(0,len(song_list)-1)))
@@ -222,7 +220,7 @@ def main():
        
     def combo(event=None):
         """Change Song Using ComboBox Entries"""
-        label4.config(text="♫ ♫")
+        label4.config(text="")
         
         with open("current_song.txt")as file:
             file_data = file.read()
@@ -282,18 +280,8 @@ def main():
         
     def skip_backward(e=None):
         """Backwards song by 10 seconds."""
-        timestamp_list = ['00:00','00:01','00:02','00:03']
-        c = False
-        
-        for timestamp in timestamp_list:
-            if label2.cget('text')[:5]==timestamp:
-                c = True
-                break
-        if c:
-            prev()
-        else:
-            player.seek(player.time-10)
-            supporter()
+        player.seek(player.time-10)
+        supporter()
           
           
     root = Tk()
@@ -330,7 +318,7 @@ def main():
     prev_btn.grid(row=1, column=1, padx=20,)
 
     allSongCombo_var = StringVar()
-    allSongCombo = ttk.Combobox(root, width=18,
+    allSongCombo = Combobox(root, width=18,
                     textvariable=allSongCombo_var, state="readonly", height=6)
 
 
@@ -404,6 +392,6 @@ def main():
     play_song()
     pause_song()
     mainloop()
+    
+    
 main()
-
-
