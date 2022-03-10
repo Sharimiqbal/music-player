@@ -11,14 +11,14 @@
 
 #shortcuts 
 
-`Up Arrow ↑`--volume increase
+`Up Arrow ↑`  volume increase
 
-`Down Arrow ↓`--volume decrease
+`Down Arrow ↓`  volume decrease
 
-`Right Arrow →`--10sec forward
+`Right Arrow →`  10sec forward
 
-`Left Arrow ←`--10sec backward if song current length is more than 3 sec else play previous song.
+`Left Arrow ←`  10sec backward if song current length is more than 3 sec else play previous song.
 
-`Ctrl + Right Arrow →` Play next song.
+`Ctrl + Right Arrow →`  Play next song.
 
-`Ctrl + Left Arrow ←`Play previous song.
+`Ctrl + Left Arrow ←` Play previous song.
