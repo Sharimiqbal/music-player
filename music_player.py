@@ -1,21 +1,3 @@
-import sys
-import subprocess
-import pkg_resources
-
-
-def required_module():
-    """Install The Required Module For Temporarily If Not Installed In System"""
-    required = {'pyglet', 'pynput','mutagen'}
-    installed = {pkg.key for pkg in pkg_resources.working_set}
-
-    missing = required - installed
-
-    if missing:
-        python = sys.executable
-        subprocess.check_call([python, '-m', 'pip', 'install', *missing], stdout=subprocess.DEVNULL)
-
-required_module()
-
 from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,mainloop
 from tkinter import ttk
 from pyglet import media
