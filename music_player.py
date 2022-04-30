@@ -202,8 +202,7 @@ def main_func():
                 try:
                     if label4['text'] == 'Subtitles Not Available.':
                         label4['text']='Please Wait...'
-#                     with open(f"{lyrics_p}\\{label1.cget('text')}.txt",encoding='utf-8') as file:
-                    lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc") # --:> A Dictionary
+                    lyrics = toDict(f"{lyrics_p}\\{song_list[data][:-4]}.lrc") # --:> A Dictionary
 
                     subtitles_check.config(state='normal',cursor='hand2')
 
