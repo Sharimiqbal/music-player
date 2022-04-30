@@ -16,10 +16,10 @@
 
 1. Only `.lrc` file works.
 
-2. Lyrics file name should be same as one show on the label on window.
+2. Lyrics file name should be same as Song name.
 
 
-#shortcuts 
+# shortcuts 
 
 `Up Arrow ↑`  volume increase.
 
