@@ -1,4 +1,4 @@
-from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,mainloop,Frame,Listbox
+from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,Frame,Listbox
 from tkinter.ttk import Combobox
 from tkinter.messagebox import askyesno
 from pyglet.media import Player,load
@@ -543,6 +543,6 @@ def main_func():
         isChangeInSongList()
         play_song()
         pause_song()
-        mainloop()
+        root.mainloop()
 if __name__ == '__main__':
     main_func()
