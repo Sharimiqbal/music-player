@@ -1,4 +1,4 @@
-j# music-player
+# music-player
 
 ### Steps After Downloading:
 
