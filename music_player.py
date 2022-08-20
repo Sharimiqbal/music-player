@@ -1,4 +1,4 @@
-from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,Frame,Listbox
+from tkinter import Button,Label,Tk,PhotoImage,StringVar,IntVar,Checkbutton,mainloop,Frame,Listbox,Entry
 from tkinter.ttk import Combobox
 from tkinter.messagebox import askyesno
 from pyglet.media import Player,load
@@ -6,19 +6,17 @@ from os import listdir,startfile
 from os.path import realpath,dirname
 from random import randint
 from time import sleep
+from sys import exit
 
-volume = 1
-song_list=full_song_time=label1=label2=label4=player=data=timer_=nextWindow=allSongCombo=song_name=changeInSongListLoop=next_song_index=None
+next_song_name=next_lst=song_list=full_song_time=label1=label2=label4=player=data=timer_=nextWindow=allSongCombo=song_name=changeInSongListLoop=next_song_index=None
 
-
-# Don't change 
 full_path = dirname(realpath(__file__))
 song_p = realpath(f'{full_path}\\Songs')
 photo_p = realpath(f'{full_path}\\Photos')
 lyrics_p = realpath(f'{full_path}\\Lyrics')
 c_song_p = realpath(f'{full_path}\\Current Song.txt')
 music_ico = realpath(f'{full_path}\\music.ico')
-## ------  ##
+
 
 def second_win():
     r = Tk()
@@ -61,12 +59,11 @@ def toTime(timeInSec=0):
 
 
 def toDict(path):
-    with open(path,encoding='utf-8') as f:
-        a = f.read()
+    with open(path) as f:
+        a = f.read().replace('\ufeff','')
     string = a.splitlines()
     out = ""
     for line in string:
-        line = line.replace('\ufeff','')
         line = line.split(' ')
         i = 0
         while True:
@@ -128,14 +125,15 @@ def main_func():
                     pass
             finally:
                 with open(c_song_p,encoding='utf-8') as f:
-                    data = f.read()
+                    f_list=['0',"0",'1']
+                    _Flist = f.read().replace('\n','').split(',')
+                    f_list[:len(_Flist)] = _Flist
+                    data = f_list[0]
                     try:
                         int(data)
                     except:
                         data=0
-                    if data == "":
-                        data = "0"
-                    elif int(data)>=len(song_list):
+                    if int(data)>=len(song_list):
                         data = len(song_list)-1
                     data = int(data)
 
@@ -149,8 +147,10 @@ def main_func():
             except:
                 song = f"{song_p}/{song_list[data-1]}"
                 src =load(song)
+
             player.queue(src)
-            player.volume = volume
+            player.seek(float(f_list[1]))
+            player.volume = float(f_list[2])
 
             try:
                 label_text = (((song_list[data]).replace(
@@ -184,7 +184,7 @@ def main_func():
 
             def time_function(e=None):
                 """Track The Time And Add Lyrics To Song"""
-                global timer_,next_song_index
+                global timer_,next_song_index,next_song_name
 
                 label2.config(text=f'{toTime(player.time)}    of')
                 if loop_var.get() == 0:
@@ -193,18 +193,24 @@ def main_func():
                             combo(None,str(next_song_index))
                             combo_entry_updater()
                             next_song_index = None
-                            
+
                         else:
                             nex()
-                        
+                    elif player.time >= full_song_time:
+                        if not next_song_name in name_changer():
+                            next_song_index = None
+                            next_song_name = None
+
+
                 else:
-                    if player.time >= full_song_time:
+                    if player.time+1 >= full_song_time:
                         nex()
                         prev()
+
                 try:
                     if label4['text'] == 'Subtitles Not Available.':
                         label4['text']='Please Wait...'
-                    lyrics = toDict(f"{lyrics_p}\\{song_list[data][:-4]}.lrc") # --:> A Dictionary
+                    lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc")
 
                     subtitles_check.config(state='normal',cursor='hand2')
 
@@ -299,16 +305,14 @@ def main_func():
         def v_up(e=None):
             """Increase The Volume"""
             global volume
-            player.volume+=2
-            if player.volume > 70:
-                player.volume=70
-            elif player.volume == 2:
-                player.volume =1
+            player.volume+=.1
+            if player.volume > 1:
+                player.volume=1
             volume = player.volume
 
         def v_down(e=None):
             global volume
-            player.volume-=2
+            player.volume-=.1
             if player.volume < 0:
                 player.volume=0
             volume = player.volume
@@ -331,7 +335,7 @@ def main_func():
             with open(c_song_p, encoding='utf-8')as file:
                 file_data = file.read()
 
-            
+
 
             if file_data != for_write_data:
                 with open(c_song_p, "w")as file:
@@ -354,7 +358,7 @@ def main_func():
             pause_btn.focus_set()
             if nextWindow is not None:
                 nextWindow.focus_force()
-                
+
 
         def supporter():
             """This Function Is Call Inside '(skip_forward and skip_forward)' Because Both Have The Same Line Of Code."""
@@ -404,12 +408,13 @@ def main_func():
                 allSongCombo['values'] = song_name
                 allSongCombo.current(data)
             elif song_name != name_changer():
+                songs()
                 name_changer()
                 combo_entry_updater()
                 allSongCombo['values'] = song_name
                 allSongCombo.current(data)
                 label1['text']=song_name[data]
-                
+
 
             changeInSongListLoop = root.after(1000,isChangeInSongList)
         def name_changer():
@@ -419,22 +424,27 @@ def main_func():
             return song_name
 
         def on_closing(e=None):
+            check_ = False
             if player.playing:
                 pause_song()
                 a = askyesno('Quit','Do You Want To Quit?')
 
                 if a:
                     root.after_cancel(changeInSongListLoop)
-                    root.destroy()
-                    exit()
+                    check_ = True
                 else:
                     play_song()
             else:
                 root.after_cancel(changeInSongListLoop)
+                check_ = True
+            if check_:
+                with open(c_song_p,'w') as f:
+                    f.write(f"{data},{player.time},{player.volume}")
                 root.destroy()
                 exit()
 
         root = Tk()
+
         root.config(
             padx=100,
             pady=100,
@@ -472,7 +482,7 @@ def main_func():
         allSongCombo_var = StringVar()
         allSongCombo = Combobox(root, width=18,
                         textvariable=allSongCombo_var, state="readonly", height=10)
-        
+
         name_changer()
         allSongCombo['values'] = song_name
         allSongCombo.grid(column=1, row=2, columnspan=4,pady=10)
@@ -499,31 +509,76 @@ def main_func():
         subtitles_check = Checkbutton(root, text='lyrics',cursor="hand2",variable=var_subtitles, onvalue=1,command=subtitle, offvalue=0,bg="Light Blue",activebackground="Light Blue")
         subtitles_check.grid(column=3, row=5, columnspan=2,pady=10)
         def next_song():
-            global nextWindow
+            global nextWindow,next_lst
+
+            next_song_btn['state'] = 'disabled'
+            next_song_btn['cursor'] = ''
             nextWindow = Tk()
+            nextWindow.maxsize(width=400,height=210)
             nextWindow.focus_force()
             nextWindow.title("Next Song")
+            variable = StringVar(nextWindow)
+            e = Entry(nextWindow,textvariable=variable,)
+            e.insert(0,"SEA"+'\u0280'+"CH")
+            e.pack()
+            e.bind('<FocusIn>',lambda a:e.delete(0,'end'))
+            e.bind('<FocusOut>',lambda a:e.insert(0,"SEA"+'\u0280'+"CH"))
+
+
             listbox = Listbox(nextWindow, width=40, height=10)
-            for i,v in enumerate(name_changer()):
-                listbox.insert(i,v)
+            next_lst = name_changer()
+            for i,v in enumerate(next_lst):
+                    listbox.insert(i,v)
+            def f():
+                global next_lst,next_loop
+                l = name_changer()
+                if next_lst != l:
+                    for a in range(len(next_lst)):
+                        listbox.delete(0)
+                    next_lst = l
+
+                    for i,v in enumerate(next_lst):
+                        listbox.insert(i,v)
+                next_loop = nextWindow.after(100,f)
+
+
+            f()
             listbox.pack()
+
+            def func(var,index,mode):
+                lst = [a for a in name_changer() if a.lower().startswith(variable.get().lower()) or variable.get()=="SEA"+'\u0280'+"CH"]
+                for a in range(len(name_changer())):
+                    listbox.delete(0)
+                for i,v in enumerate(lst):
+                    listbox.insert(i,v)
+            variable.trace_add(mode='write',callback=func)
             def selected_item():
-                global next_song_index,nextWindow
-                next_song_index = listbox.curselection()[0]
+                global next_song_index,nextWindow,next_song_name
+                try:
+                    next_song_index = name_changer().index(listbox.get(listbox.curselection()))
+                    next_song_name = listbox.get(listbox.curselection())
+                except IndexError:
+                    pass
                 if next_song_index == data:
                     next_song_index+=1
                 nextWindow.destroy()
+                next_song_btn['state'] = 'normal'
+                next_song_btn['cursor'] = 'hand2'
                 nextWindow = None
-            def notNeed():
-                global nextWindow
+            def noNeed():
+                global nextWindow,next_loop
+                nextWindow.after_cancel(next_loop)
                 nextWindow.destroy()
                 nextWindow = None
-                
-            nextWindow.protocol("WM_DELETE_WINDOW",notNeed)
+
+                next_song_btn['state'] = 'normal'
+                next_song_btn['cursor'] = 'hand2'
+
+            nextWindow.protocol("WM_DELETE_WINDOW",noNeed)
             Button(nextWindow,text='Ok',command=selected_item).pack()
-                        
-        next_song = Button(root,text="Next Song",command=next_song,bg="Light Blue", cursor="hand2", activebackground="Light Blue")
-        next_song.place(x=100,y=250)
+
+        next_song_btn = Button(root,text="Next Song",command=next_song,bg="Light Blue", cursor="hand2", activebackground="Light Blue")
+        next_song_btn.place(x=100,y=250)
 
         combo_entry_updater()
 
@@ -545,6 +600,7 @@ def main_func():
         isChangeInSongList()
         play_song()
         pause_song()
-        root.mainloop()
+        mainloop()
+        exit()
 if __name__ == '__main__':
     main_func()
