@@ -10,13 +10,15 @@ from time import sleep
 volume = 1
 song_list=full_song_time=label1=label2=label4=player=data=timer_=nextWindow=allSongCombo=song_name=changeInSongListLoop=next_song_index=None
 
+
+# Don't change 
 full_path = dirname(realpath(__file__))
 song_p = realpath(f'{full_path}\\Songs')
 photo_p = realpath(f'{full_path}\\Photos')
 lyrics_p = realpath(f'{full_path}\\Lyrics')
 c_song_p = realpath(f'{full_path}\\Current Song.txt')
 music_ico = realpath(f'{full_path}\\music.ico')
-
+## ------  ##
 
 def second_win():
     r = Tk()
