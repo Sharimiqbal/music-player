@@ -8,7 +8,7 @@ from random import randint
 from time import sleep
 from sys import exit
 
-next_song_name=next_lst=song_list=full_song_time=label1=label2=label4=player=data=timer_=nextWindow=allSongCombo=song_name=changeInSongListLoop=next_song_index=None
+
 
 full_path = dirname(realpath(__file__))
 song_p = realpath(f'{full_path}\\Songs')
@@ -16,7 +16,7 @@ photo_p = realpath(f'{full_path}\\Photos')
 lyrics_p = realpath(f'{full_path}\\Lyrics')
 c_song_p = realpath(f'{full_path}\\Current Song.txt')
 music_ico = realpath(f'{full_path}\\music.ico')
-
+nextWindow = None
 
 def second_win():
     r = Tk()
@@ -131,7 +131,7 @@ def main_func():
                     data = f_list[0]
                     try:
                         int(data)
-                    except:
+                    except ValueError:
                         data=0
                     if int(data)>=len(song_list):
                         data = len(song_list)-1
@@ -210,8 +210,7 @@ def main_func():
                 try:
                     if label4['text'] == 'Subtitles Not Available.':
                         label4['text']='Please Wait...'
-                    # with open(f"{lyrics_p}\\{label1.cget('text')}.txt") as file:
-                    #     lyrics = eval(file.read())
+
                     lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc")
 
                     subtitles_check.config(state='normal',cursor='hand2')
