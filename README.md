@@ -35,4 +35,4 @@
 This is the preview of the music player.
 
 
-![image](https://user-images.githubusercontent.com/94395537/185744288-202d8a5a-a2e8-4929-ac7e-f7688ab80a65.png)
+![image](https://user-images.githubusercontent.com/94395537/185744331-537d6e12-c0f8-4a87-b0d3-a2d0baea7c27.png)
