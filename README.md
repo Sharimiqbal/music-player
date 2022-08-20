@@ -32,7 +32,9 @@
 
 
 
-This is the preview of the music player.
+
+----------------------------------
+Preview of the music player.
 
 
 ![image](https://user-images.githubusercontent.com/94395537/185744331-537d6e12-c0f8-4a87-b0d3-a2d0baea7c27.png)
