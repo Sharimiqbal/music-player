@@ -29,3 +29,10 @@
 `Ctrl + Right Arrow →`  Play next song.
 
 `Ctrl + Left Arrow ←` Play previous song.
+
+
+
+This is the preview of the music player.
+
+
+![image](https://user-images.githubusercontent.com/94395537/185744288-202d8a5a-a2e8-4929-ac7e-f7688ab80a65.png)
