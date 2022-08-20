@@ -6,7 +6,6 @@ from os import listdir,startfile
 from os.path import realpath,dirname
 from random import randint
 from time import sleep
-from sys import exit
 
 
 
@@ -210,8 +209,11 @@ def main_func():
                 try:
                     if label4['text'] == 'Subtitles Not Available.':
                         label4['text']='Please Wait...'
+                    with open(f"{lyrics_p}\\{label1.cget('text')}.txt") as file:
+                        lyrics = eval(file.read())  
 
-                    lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc")
+
+                    # lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc")
 
                     subtitles_check.config(state='normal',cursor='hand2')
 
@@ -264,7 +266,8 @@ def main_func():
                     with open(c_song_p, "w") as f:
                         f.write(str(len(song_list)-1))
                 pause_song()
-                start_app()
+                
+                start_app(volume=player.volume)
                 play_song()
                 combo_entry_updater()
             else:
@@ -303,7 +306,7 @@ def main_func():
                 f.write(str(randint(0,len(song_list)-1)))
 
             pause_song()
-            start_app(player.volume)
+            start_app(volume=player.volume)
             play_song()
             combo_entry_updater()
 
@@ -311,14 +314,14 @@ def main_func():
         def v_up(e=None):
             """Increase The Volume"""
             global volume
-            player.volume+=.1
+            player.volume+=0.066
             if player.volume > 1:
                 player.volume=1
             volume = player.volume
 
         def v_down(e=None):
             global volume
-            player.volume-=.1
+            player.volume-=0.066
             if player.volume < 0:
                 player.volume=0
             volume = player.volume
@@ -430,38 +433,20 @@ def main_func():
             return song_name
 
         def on_closing(e=None):
-            check_ = False
-            if player.playing:
-                pause_song()
-                a = askyesno('Quit','Do You Want To Quit?')
-
-                if a:
-                    root.after_cancel(changeInSongListLoop)
-                    check_ = True
-                else:
-                    play_song()
-            else:
-                root.after_cancel(changeInSongListLoop)
-                check_ = True
-            if check_:
-                with open(c_song_p,'w') as f:
-                    f.write(f"{data},{player.time},{player.volume}")
-                root.destroy()
-                exit()
+            with open(c_song_p,'w') as f:
+                f.write(f"{data},{player.time},{player.volume}")
+            root.destroy()
 
         root = Tk()
 
         root.config(
             padx=100,
             pady=100,
-            bg="Light Blue",
-            width=400,
-            height=350)
+            bg="Light Blue")
         root.iconbitmap(music_ico)
         root.title("Music Player")
-        root.geometry('450x400')
-        root.maxsize(width=450, height=400)
-        root.minsize(width=450, height=400)
+        root.geometry('480x420')
+        root.resizable(False,False)
 
         start_app()
 
@@ -520,7 +505,7 @@ def main_func():
             next_song_btn['state'] = 'disabled'
             next_song_btn['cursor'] = ''
             nextWindow = Tk()
-            nextWindow.maxsize(width=400,height=210)
+            nextWindow.geometry("400x270")
             nextWindow.focus_force()
             nextWindow.title("Next Song")
             variable = StringVar(nextWindow)
@@ -567,10 +552,7 @@ def main_func():
                     pass
                 if next_song_index == data:
                     next_song_index+=1
-                nextWindow.destroy()
-                next_song_btn['state'] = 'normal'
-                next_song_btn['cursor'] = 'hand2'
-                nextWindow = None
+                noNeed()
             def noNeed():
                 global nextWindow,next_loop
                 nextWindow.after_cancel(next_loop)
@@ -581,7 +563,7 @@ def main_func():
                 next_song_btn['cursor'] = 'hand2'
 
             nextWindow.protocol("WM_DELETE_WINDOW",noNeed)
-            Button(nextWindow,text='Ok',command=selected_item).pack()
+            Button(nextWindow,text='Ok',command=selected_item,borderwidth=.5).pack()
 
         next_song_btn = Button(root,text="Next Song",command=next_song,bg="Light Blue", cursor="hand2", activebackground="Light Blue")
         next_song_btn.place(x=100,y=250)
@@ -607,6 +589,8 @@ def main_func():
         play_song()
         pause_song()
         mainloop()
-        exit()
+        
 if __name__ == '__main__':
     main_func()
+    with open(c_song_p,'w') as f:
+        f.write(f"{data},{player.time},{player.volume}")
