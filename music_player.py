@@ -110,7 +110,7 @@ def main_func():
     if len(songs()) <= 0:
         second_win()
     else:
-        def start_app(e=None):
+        def start_app(e=None,volume=None):
             songs()
             global data, player, label1, label2, full_song_time,label4,next_song_index
             next_song_index = None
@@ -150,7 +150,7 @@ def main_func():
 
             player.queue(src)
             player.seek(float(f_list[1]))
-            player.volume = float(f_list[2])
+            player.volume = volume if volume is not None else float(f_list[2])
 
             try:
                 label_text = (((song_list[data]).replace(
@@ -210,6 +210,8 @@ def main_func():
                 try:
                     if label4['text'] == 'Subtitles Not Available.':
                         label4['text']='Please Wait...'
+                    # with open(f"{lyrics_p}\\{label1.cget('text')}.txt") as file:
+                    #     lyrics = eval(file.read())
                     lyrics = toDict(f"{lyrics_p}\\{label1.cget('text')}.lrc")
 
                     subtitles_check.config(state='normal',cursor='hand2')
@@ -251,21 +253,26 @@ def main_func():
 
         def prev(e=None):
             """Go To The Previous Song On The List"""
-            label4.config(text="")
-            label1.grid_forget()
+            if player.time<=3:
+                label4.config(text="")
+                label1.grid_forget()
 
-            if data > 0:
-                with open(c_song_p, "w") as f:
-                    f.write(str(data-1))
+                if data > 0:
+                    with open(c_song_p, "w") as f:
+                        f.write(str(data-1))
 
+                else:
+                    with open(c_song_p, "w") as f:
+                        f.write(str(len(song_list)-1))
+                pause_song()
+                start_app()
+                play_song()
+                combo_entry_updater()
             else:
-                with open(c_song_p, "w") as f:
-                    f.write(str(len(song_list)-1))
+                player.seek(0)
+                supporterFunc()
 
-            pause_song()
-            start_app()
-            play_song()
-            combo_entry_updater()
+                
 
 
         def nex(event=None):
@@ -282,7 +289,7 @@ def main_func():
                     f.write(str(0))
 
             pause_song()
-            start_app()
+            start_app(volume=player.volume)
             play_song()
             combo_entry_updater()
 
@@ -297,7 +304,7 @@ def main_func():
                 f.write(str(randint(0,len(song_list)-1)))
 
             pause_song()
-            start_app()
+            start_app(player.volume)
             play_song()
             combo_entry_updater()
 
@@ -343,7 +350,7 @@ def main_func():
 
                 label1.config(text="")
                 pause_song()
-                start_app()
+                start_app(volume=player.volume)
                 play_song()
 
 
@@ -360,30 +367,30 @@ def main_func():
                 nextWindow.focus_force()
 
 
-        def supporter():
+        def supporterFunc():
             """This Function Is Call Inside '(skip_forward and skip_forward)' Because Both Have The Same Line Of Code."""
             label4.config(text="Please Wait...")
 
             if player.playing:
                 pause_song()
-                sleep(.05)
+                sleep(.02)
                 play_song()
             else:
                 play_song()
-                sleep(.05)
+                sleep(.02)          
                 pause_song()
 
 
         def skip_forward(e=None):
             """Forwards song by 10 seconds."""
             player.seek(player.time+10)
-            supporter()
+            supporterFunc()
 
 
         def skip_backward(e=None):
             """Backwards song by 10 seconds."""
             player.seek(player.time-10)
-            supporter()
+            supporterFunc()
 
 
         def isChangeInSongList():
