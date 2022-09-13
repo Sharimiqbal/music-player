@@ -32,6 +32,7 @@ def second_win():
     Label(frame,text='Please Upload Songs And',font=('arial',15,'normal'),bg='#f1f8f3').grid(column=0,row=3)
     l2 = Label(frame,text='Restart The App',font=('arial',15,'underline'),fg='Blue',cursor='hand2',bg='#f1f8f3')
     l2.grid(column=1,row=3,sticky='w')
+    
     frame.pack(fill='both',expand=True)
 
     def abc(e):
