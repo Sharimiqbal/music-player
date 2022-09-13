@@ -3,18 +3,18 @@ from tkinter.ttk import Combobox
 from tkinter.messagebox import askyesno
 from pyglet.media import Player,load
 from os import listdir,startfile
-from os.path import realpath,dirname
+from os.path import realpath,dirname,join
 from random import randint
 from time import sleep
 
 
 
 full_path = dirname(realpath(__file__))
-song_p = realpath(f'{full_path}\\Songs')
-photo_p = realpath(f'{full_path}\\Photos')
-lyrics_p = realpath(f'{full_path}\\Lyrics')
-c_song_p = realpath(f'{full_path}\\Current Song.txt')
-music_ico = realpath(f'{full_path}\\music.ico')
+song_p = join(full_path,'Songs')
+photo_p = join(full_path,'Photos')
+lyrics_p = join(full_path,'Lyrics')
+c_song_p = join(full_path,'Current Song.txt')
+music_ico = join(full_path,'music.ico')
 nextWindow = None
 
 def second_win():
