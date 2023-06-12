@@ -107,6 +107,12 @@ song_len = len(songs())
 def main_func():
     global allSongCombo
 
+    def update_title_font():
+        if len(song_name[data]) > 13:
+            label1['font']=('bold', 20-(len(song_name[data])%13), "normal")
+        else:
+            label1['font']=('bold', 20, "normal")
+
     if len(songs()) <= 0:
         second_win()
     else:
@@ -267,6 +273,8 @@ def main_func():
                 pause_song()
                 
                 start_app(volume=player.volume)
+                update_title_font()
+
                 play_song()
                 combo_entry_updater()
             else:
@@ -291,6 +299,8 @@ def main_func():
 
             pause_song()
             start_app(volume=player.volume)
+            update_title_font()
+
             play_song()
             combo_entry_updater()
 
@@ -397,10 +407,6 @@ def main_func():
         def isChangeInSongList():
             global song_len,song_list,data,changeInSongListLoop
             c = len(songs())
-            if len(song_name[data]) > 13:
-                label1['font']=('bold', 20-(len(song_name[data])%13), "normal")
-            else:
-                label1['font']=('bold', 20, "normal")
             if len(songs()) <= 0:
                 pause_song()
                 root.destroy()
@@ -410,11 +416,13 @@ def main_func():
                 name_changer()
                 try:
                     data = name_changer().index(label1['text'])
-                except:
+                except Exception as e:
+                    print("Yes Buddy Error is Here")
                     prev()
+                
                 combo_entry_updater()
                 allSongCombo['values'] = song_name
-                allSongCombo.current(data)
+                allSongCombo.current(data-1)
             elif song_name != name_changer():
                 songs()
                 name_changer()
@@ -422,9 +430,10 @@ def main_func():
                 allSongCombo['values'] = song_name
                 allSongCombo.current(data)
                 label1['text']=song_name[data]
+                update_title_font()
+                
 
-
-            changeInSongListLoop = root.after(1000,isChangeInSongList)
+            changeInSongListLoop = root.after(1000, isChangeInSongList)
         def name_changer():
             global song_name
             song_name = [
@@ -588,7 +597,9 @@ def main_func():
         play_song()
         pause_song()
         root.mainloop()
-        
+
+
+
 if __name__ == '__main__':
     main_func()
     with open(c_song_p,'w') as f:
